@@ -21,8 +21,8 @@ namespace MVC.Project.PL.Controllers
         // /Department/Index
         public IActionResult Index()
         {
-            //var departments = _deparmtentsRepo;
-            return View();
+            var departments = _deparmtentsRepo.GetAll();
+            return View(departments);
         }
     }
 }
