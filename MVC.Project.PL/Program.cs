@@ -14,6 +14,11 @@ namespace MVC.Project.PL
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
+
+            // Data Seeding 
+            // Apply Migrations
+
+            //hostBuilder.Run(); // Application is rready for Requests
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
