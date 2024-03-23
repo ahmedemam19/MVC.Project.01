@@ -20,8 +20,4 @@
     <ProjectReference Include="..\MVC.Project.BLL\MVC.Project.BLL.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\NewFolder\" />
-  </ItemGroup>
-
 </Project>
