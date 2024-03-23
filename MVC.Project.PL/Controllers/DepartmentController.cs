@@ -99,6 +99,7 @@ namespace MVC.Project.PL.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken] // Action FIlter used to prevent cross-site request forgery (CSRF) attacks
         public IActionResult Edit([FromRoute] int id, Department department)
         {
 
