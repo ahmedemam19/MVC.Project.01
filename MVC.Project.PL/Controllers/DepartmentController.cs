@@ -33,6 +33,7 @@ namespace MVC.Project.PL.Controllers
             return View();
         }
 
+
         [HttpPost]
         public IActionResult Create(Department department)
         {
@@ -43,6 +44,24 @@ namespace MVC.Project.PL.Controllers
                     return RedirectToAction(nameof(Index));
             }
             return View(department);
+        }
+
+
+        // /Department/Details/10
+        [HttpGet]
+        public IActionResult Details(int? id) 
+        {
+            if(id is null)
+                return BadRequest(); // 400
+
+            var department = _deparmtentsRepo.Get(id.Value);
+
+            if (department is null)
+                return NotFound(); // 404
+
+            return View(department);
+
+
         }
     }
 }
