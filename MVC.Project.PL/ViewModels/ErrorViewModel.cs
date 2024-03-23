@@ -1,6 +1,6 @@
-using System;
+  using System;
 
-namespace MVC.Project.PL.Models
+namespace MVC.Project.PL.ViewModels
 {
     public class ErrorViewModel
     {
