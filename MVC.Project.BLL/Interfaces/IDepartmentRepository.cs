@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace MVC.Project.BLL.Interfaces
 {
-    public interface IDepartmentRepository
+    public interface IDepartmentRepository : IGenericRepository<Department>
     {
-        IEnumerable<Department> GetAll();
+        #region Inherited from IGernericRepository
+        //IEnumerable<Department> GetAll();
+        //Department Get(int id);
+        //int Add(Department entity);
+        //int Update(Department entity);
+        //int Delete(Department entity); 
+        #endregion
 
-        Department Get(int id);
 
-        int Add(Department entity);
-
-        int Update(Department entity);
-        
-        int Delete(Department entity);
 
     }
 }

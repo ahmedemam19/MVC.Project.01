@@ -26,9 +26,9 @@ namespace MVC.Project.DAL.Models
         PartTime = 2
     }
 
-    public class Employee
+    public class Employee : ModelBase
     {
-        public int Id { get; set; }
+        //public int Id { get; set; } // Inherited from class " ModelBase "
 
 
         [Required]
