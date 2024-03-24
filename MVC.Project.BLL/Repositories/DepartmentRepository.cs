@@ -22,19 +22,19 @@ namespace MVC.Project.BLL.Repositories
 
         public int Add(Department entity)
         {
-            _dbContext.departments.Add(entity);
+            _dbContext.Departments.Add(entity);
             return _dbContext.SaveChanges();
         }
 
         public int Update(Department entity)
         {
-            _dbContext.departments.Update(entity);
+            _dbContext.Departments.Update(entity);
             return _dbContext.SaveChanges();
         }
 
         public int Delete(Department entity)
         {
-            _dbContext.departments.Remove(entity);
+            _dbContext.Departments.Remove(entity);
             return _dbContext.SaveChanges();
         }
         
@@ -52,7 +52,7 @@ namespace MVC.Project.BLL.Repositories
         }
 
         public IEnumerable<Department> GetAll()
-            => _dbContext.departments.AsNoTracking().ToList();
+            => _dbContext.Departments.AsNoTracking().ToList();
 
 
 
