@@ -15,7 +15,7 @@ namespace MVC.Project.PL.Controllers
     public class DepartmentController : Controller
     {
         private readonly IDepartmentRepository _deparmtentsRepo;
-        private readonly IWebHostEnvironment _env;
+        private readonly IWebHostEnvironment _env; // For the [ ctach in Action Edit ]
 
         // Ask CLR for creating object from class implementing IDepartmentRepository
         public DepartmentController(IDepartmentRepository departmentRepo, IWebHostEnvironment env)
@@ -28,6 +28,7 @@ namespace MVC.Project.PL.Controllers
         #region Action Index
 
         // /Department/Index
+        // Return all the departments in the DepartmentRepo
         public IActionResult Index()
         {
             var departments = _deparmtentsRepo.GetAll();
@@ -46,6 +47,7 @@ namespace MVC.Project.PL.Controllers
         }
 
 
+        // Action for Validating the info of departments entered by the user and add it to the DepartmentRepo if true .
         [HttpPost]
         public IActionResult Create(Department department)
         {
@@ -100,7 +102,7 @@ namespace MVC.Project.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken] // Action FIlter used to prevent cross-site request forgery (CSRF) attacks
-        public IActionResult Edit([FromRoute] int id, Department department)
+        public IActionResult Edit([FromRoute] int id, Department department) // [FromRoute] indicates that the parameter should be bound from the [ route data ] of the incoming request URL.
         {
 
             if (id != department.Id)
@@ -123,7 +125,7 @@ namespace MVC.Project.PL.Controllers
                 if(_env.IsDevelopment())
                     ModelState.AddModelError(string.Empty, ex.Message);
                 else
-                    ModelState.AddModelError(string.Empty, "An Error has Occurred during updating yuor Department"); // Sholud be written in a JSON file
+                    ModelState.AddModelError(string.Empty, "An Error has Occurred during updating yuor Department"); // Should be written in a JSON file
 
                 return View(department);
             }
@@ -158,7 +160,7 @@ namespace MVC.Project.PL.Controllers
                 if (_env.IsDevelopment())
                     ModelState.AddModelError(string.Empty, ex.Message);
                 else
-                    ModelState.AddModelError(string.Empty, "An Error has Occurred during updating yuor Department"); // Should be written in a JSON file
+                    ModelState.AddModelError(string.Empty, "An Error has Occurred during Deleting your Department"); // Should be written in a JSON file
 
                 return View(department);
 
@@ -166,5 +168,7 @@ namespace MVC.Project.PL.Controllers
         }
 
         #endregion
+
+
     }
 }
