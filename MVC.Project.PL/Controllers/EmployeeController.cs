@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using MVC.Project.BLL.Interfaces;
 using MVC.Project.BLL.Repositories;
 using MVC.Project.DAL.Models;
 using System;
+using System.Security.Cryptography.Xml;
 
 namespace MVC.Project.PL.Controllers
 {
@@ -25,6 +27,20 @@ namespace MVC.Project.PL.Controllers
         // Return all the Employees in the EmployeeRepo
         public IActionResult Index()
         {
+            // Binding through View Dictionary : Data Sent from the Action to View [one way]
+
+            // 1. ViewData
+            // 1. ViewData is a Dictionary Type Property (introduced in ASP .NET Framework 3.5)
+            //    => It helps us to transfer the data from controller[Action] to View
+            ViewData["Message"] = "Hello From ViewData";
+
+
+            // 2. ViewBag
+            // 2. ViewBag is a Dynamic Type Property (introduced in ASP .NET Framework 4.0 based on dynamic feature
+            //    => It helps us to transfer the data from controller[Action] to view
+            ViewBag.Message = "Hello ViewBag";
+
+
             var employees = _employeeRepository.GetAll();
             return View(employees);
         }
