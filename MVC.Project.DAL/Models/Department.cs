@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace MVC.Project.DAL.Models
 {
-    public class Department
+    public class Department : ModelBase
     {
-        public int Id { get; set; }
+        //public int Id { get; set; } // Inherited from class " ModelBase "
 
         [Required(ErrorMessage = "Code is Required!!")]
         public string Code { get; set; }

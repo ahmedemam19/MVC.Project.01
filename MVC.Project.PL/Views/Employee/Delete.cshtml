@@ -1,0 +1,62 @@
+﻿
+@model Employee
+
+@{
+    ViewData["Title"] = "Delete Employee";
+}
+
+<h1>Are you sure to delete this Employee ?</h1>
+
+<br />
+<br />
+
+
+<form asp-action="Delete">
+
+    <div class="form-group">
+        <label class="col-form-label" asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" readonly />
+    </div>
+    <div class="form-group">
+        <label class="col-form-label" asp-for="Age"></label>
+        <input asp-for="Age" class="form-control" readonly />
+    </div>
+    <div class="form-group">
+        <label class="col-form-label" asp-for="Address"></label>
+        <input asp-for="Address" class="form-control" readonly />
+    </div>
+    <div class="form-group">
+        <label class="col-form-label" asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" readonly />
+    </div>
+    <div class="form-group">
+        <label class="col-form-label" asp-for="Gender"></label>
+        <input asp-for="Gender" class="form-control" readonly />
+    </div>
+    <div class="form-group">
+        <label class="col-form-label" asp-for="Salary"></label>
+        <input asp-for="Salary" class="form-control" readonly />
+    </div>
+    <div class="form-group">
+        <input asp-for="IsActive" class="form-check-input" readonly />
+        <label class="col-form-label" asp-for="IsActive"></label>
+    </div>
+    <div class="form-group">
+        <input asp-for="HiringDate" class="form-control" readonly />
+        <label class="col-form-label" asp-for="HiringDate"></label>
+    </div>
+    <div class="form-group">
+        <input asp-for="IsDeleted" class="form-check-input" readonly />
+        <label class="col-form-label" asp-for="IsDeleted"></label>
+    </div>
+
+    <input type="submit" value="Delete" class="btn btn-primary" /> |
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+
+</form>
+
+@section ValidateScriptsSection {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+}
+
