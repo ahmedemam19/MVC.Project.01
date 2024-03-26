@@ -11,7 +11,7 @@ namespace MVC.Project.PL.Controllers
     public class EmployeeController : Controller
     {
         private readonly IEmployeeRepository _employeeRepository;
-        private readonly IWebHostEnvironment _env; // For the [ ctach in Action Edit ]
+        private readonly IWebHostEnvironment _env; // For the [ catch in Action Edit ]
 
         // Ask CLR for creating object from class implementing IEmployeeRepository
         public EmployeeController(IEmployeeRepository employeeRepository, IWebHostEnvironment env)

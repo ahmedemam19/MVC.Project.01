@@ -15,7 +15,7 @@ namespace MVC.Project.PL.Controllers
     public class DepartmentController : Controller
     {
         private readonly IDepartmentRepository _deparmtentsRepo;
-        private readonly IWebHostEnvironment _env; // For the [ ctach in Action Edit ]
+        private readonly IWebHostEnvironment _env; // For the [ catch in Action Edit ]
 
         // Ask CLR for creating object from class implementing IDepartmentRepository
         public DepartmentController(IDepartmentRepository departmentRepo, IWebHostEnvironment env)

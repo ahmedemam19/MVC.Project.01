@@ -14,17 +14,17 @@
 <div>
     <div class="form-group">
         <label class="col-form-label" asp-for="Code"></label>
-        <input asp-for="Code" class="form-control" />
+        <input asp-for="Code" class="form-control" readonly/>
     </div>
     <div class="form-group">
         <label class="col-form-label" asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
+        <input asp-for="Name" class="form-control" readonly />
     </div>
     <div class="form-group">
         <label class="col-form-label" asp-for="DateOfCreation"></label>
-        <input asp-for="DateOfCreation" class="form-control" />
+        <input asp-for="DateOfCreation" class="form-control" readonly />
     </div>
 
     <a asp-controller="Department" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a> | 
-    <a asp-controller="Department" asp-action="index" class="btn btn-secondary">Back to list</a>
+    <a asp-controller="Department" asp-action="Index" class="btn btn-secondary">Back to list</a>
 </div>
