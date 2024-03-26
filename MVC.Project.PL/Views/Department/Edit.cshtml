@@ -12,20 +12,10 @@
 
     <div asp-validation-summary="ModelOnly" class="text-danger"> </div>
 
-    <div class="form-group">
-        <label class="col-form-label" asp-for="Code"></label>
-        <input asp-for="Code" class="form-control" />
-        <span asp-validation-for="Code" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label class="col-form-label" asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label class="col-form-label" asp-for="DateOfCreation"></label>
-        <input asp-for="DateOfCreation" class="form-control" />
-    </div>
+
+    @* For Rendering the components in the CreateEditDepartmentPartial *@
+    <partial name="PartialViews/CreateEditDepartmentPartial" />
+
 
 
     <input type="submit" value="Save" class="btn btn-primary" /> | 
@@ -33,8 +23,9 @@
 </form>
 
 @section ValidateScriptsSection {
-    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+    @* <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script> *@
 }
 
 

@@ -49,21 +49,10 @@
                     <td>@employee.Gender</td>
                     <td>@employee.CreationDate</td>
                     <td>@employee.IsDeleted</td>
-                    <td>
-                        <a asp-controller="Employee" asp-action="Details" asp-route-id="@employee.Id" class="btn btn-warning">
-                            <i class="fa-solid fa-eye"></i> Details
-                        </a>
-                    </td>
-                    <td>
-                        <a asp-controller="Employee" asp-action="Edit" asp-route-id="@employee.Id" class="btn btn-success">
-                            <i class="fa-solid fa-edit"></i> Edit
-                        </a>
-                    </td>
-                    <td>
-                        <a asp-controller="Employee" asp-action="Delete" asp-route-id="@employee.Id" class="btn btn-danger">
-                            <i class="fa-solid fa-trash"></i> Delete
-                        </a>
-                    </td>
+
+
+                    <partial name="_ButtonsPartial" model="@employee.Id" />
+                    @* For rendering the buttons in _ButtonsPartial  *@
                 </tr>
             }
         </tbody>
