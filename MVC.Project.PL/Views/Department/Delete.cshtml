@@ -7,6 +7,10 @@
 
 <h1>Are You Sure To Delete This Department ?</h1>
 
+<br />
+<br />
+
+
 <form asp-action="Delete" asp-controller="Department">
 
     <div class="form-group">
@@ -28,3 +32,9 @@
     <input type="submit" value="Delete" class="btn btn-primary" /> | 
     <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>
+
+@section ValidateScriptsSection {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+}
+
