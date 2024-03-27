@@ -6,6 +6,7 @@ using MVC.Project.BLL.Interfaces;
 using MVC.Project.BLL.Repositories;
 using MVC.Project.DAL.Models;
 using System;
+using System.Linq;
 using System.Security.Cryptography.Xml;
 
 namespace MVC.Project.PL.Controllers
@@ -13,7 +14,7 @@ namespace MVC.Project.PL.Controllers
     public class EmployeeController : Controller
     {
         private readonly IEmployeeRepository _employeeRepository;
-        private readonly IDepartmentRepository _departmentRepository;
+        //private readonly IDepartmentRepository _departmentRepository;
         private readonly IWebHostEnvironment _env; // For the [ catch in Action Edit ]
 
         // Ask CLR for creating object from class implementing IEmployeeRepository
@@ -27,7 +28,7 @@ namespace MVC.Project.PL.Controllers
 
         #region Action Index
         // Return all the Employees in the EmployeeRepo
-        public IActionResult Index()
+        public IActionResult Index(string SearchInput) // [ string SearchInput ] for the search input
         {
             TempData.Keep();
 
@@ -44,9 +45,17 @@ namespace MVC.Project.PL.Controllers
             //    => It helps us to transfer the data from controller[Action] to view
             //ViewBag.Message = "Hello ViewBag";
 
+            var employees = Enumerable.Empty<Employee>();
 
-            var employees = _employeeRepository.GetAll();
+            if (string.IsNullOrEmpty(SearchInput))
+                 employees = _employeeRepository.GetAll();
+            else
+                 employees = _employeeRepository.SearchByName(SearchInput.ToLower());
+
             return View(employees);
+
+
+
         }
         #endregion
 

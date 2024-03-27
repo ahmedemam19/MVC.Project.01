@@ -61,10 +61,10 @@ namespace MVC.Project.BLL.Repositories
 
 
         public IQueryable<Employee> GetEmployeesByAddress(string address)
-        {
-            return _dbContext.Employees.Where(e => e.Address.ToLower() == address.ToLower());
-        }
+            => _dbContext.Employees.Where(e => e.Address.ToLower() == address.ToLower());
 
+        public IQueryable<Employee> SearchByName(string Name)
+            => _dbContext.Employees.Where(e => e.Name.ToLower().Contains(Name));
 
     }
 }

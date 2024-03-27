@@ -39,6 +39,20 @@
 
 <br />
 
+<div class="row justify-content-center align-items-center mt-3 mb-4"> @*[ row ] to divide the page into 12 sections *@
+    <form asp-action="Index" class="row col-8 offset-2"> 
+        @* col-8 to make the form take 8 sections from the main div , [ row ] to make the 8 sections divided into 12 sections  *@
+        <div class="col-8">
+            <input type="text" class="form-control" name="SearchInput" id="SearchInput" placeholder="Search By Name" />
+        </div>
+
+        <div class="col-4">
+            <input type="submit" value="Search" class="btn btn-success" />
+        </div>
+    </form>
+</div>
+
+
 @if(Model.Count() > 0)
 {
     <table class="table table-striped table-hover table-bordered">
@@ -91,4 +105,5 @@ else
         <h4>There are no Employees <i class="fa-solid fa-circle-exclamation"></i></h4>
     </div>
 }
+
 

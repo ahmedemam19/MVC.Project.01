@@ -17,8 +17,8 @@ namespace MVC.Project.BLL.Interfaces
         //int Delete(Employee entity); 
         #endregion
 
-        IQueryable<Employee> GetEmployeesByAddress(string address); 
+        IQueryable<Employee> GetEmployeesByAddress(string address);
 
-
+        IQueryable<Employee> SearchByName(string Name);
     }
 }
