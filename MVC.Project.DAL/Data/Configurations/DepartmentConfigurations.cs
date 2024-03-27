@@ -20,6 +20,11 @@ namespace MVC.Project.DAL.Data.Configurations
             builder.Property(d => d.Code).HasColumnType("varchar").HasMaxLength(50).IsRequired();
             builder.Property(d => d.Name).HasColumnType("varchar").HasMaxLength(50).IsRequired();
 
+            builder.HasMany(d => d.Employees)
+                .WithOne(e => e.Department)
+                .HasForeignKey(e => e.DepartmentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }
