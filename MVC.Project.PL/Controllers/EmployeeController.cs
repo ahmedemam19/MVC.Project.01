@@ -13,12 +13,14 @@ namespace MVC.Project.PL.Controllers
     public class EmployeeController : Controller
     {
         private readonly IEmployeeRepository _employeeRepository;
+        private readonly IDepartmentRepository _departmentRepository;
         private readonly IWebHostEnvironment _env; // For the [ catch in Action Edit ]
 
         // Ask CLR for creating object from class implementing IEmployeeRepository
-        public EmployeeController(IEmployeeRepository employeeRepository, IWebHostEnvironment env)
+        public EmployeeController(IEmployeeRepository employeeRepository, /*IDepartmentRepository departmentRepository ,*/ IWebHostEnvironment env)
         {
             _employeeRepository = employeeRepository;
+            //_departmentRepository = departmentRepository;
             _env = env;
         }
 
@@ -52,7 +54,10 @@ namespace MVC.Project.PL.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            //ViewData["Departments"] = _departmentRepository.GetAll(); // to return all departments in the Repository
+            /*ViewBag.Departments = _departmentRepository.GetAll();*/ // to return all departments in the Repository
+
+            return View(); // return tthe same view with same name of action
         }
 
 
@@ -99,6 +104,8 @@ namespace MVC.Project.PL.Controllers
         // Edit Action take the Employee ID and return the Employee Details in the Edit View to Edit the Employee Info
         public IActionResult Edit(int? id)
         {
+            //ViewData["Departments"] = _departmentRepository.GetAll(); // to return all departments in the Repository
+
             return Details(id, "Edit");
         }
 
