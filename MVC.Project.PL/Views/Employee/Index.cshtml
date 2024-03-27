@@ -3,7 +3,32 @@
 
 @{
     ViewData["Title"] = "Index";
+
+    // string ViewDataMessage = ViewData["Message"] as string; // Enforce type safety -> requires type Conversion
+
+    // string ViewBagMessage = ViewBag.Message; // Compiler Cant Enforce typr safety -> dont require type Conversion
+
 }
+
+@if(!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+    <div class="alert alert-primary">
+        @TempData["Message"]
+    </div>
+}
+
+
+
+@* <div class="alert alert-warning">
+    @ViewData["Message"]
+</div> *@
+
+@* <div class="alert alert-success">
+    @ViewBag.Message;
+</div> *@
+
+
+
 
 <h1>All Employees</h1>
 
@@ -14,6 +39,20 @@
 
 <br />
 
+<div class="row justify-content-center align-items-center mt-3 mb-4"> @*[ row ] to divide the page into 12 sections *@
+    <form asp-action="Index" class="row col-8 offset-2"> 
+        @* col-8 to make the form take 8 sections from the main div , [ row ] to make the 8 sections divided into 12 sections  *@
+        <div class="col-8">
+            <input type="text" class="form-control" name="SearchInput" id="SearchInput" placeholder="Search By Name" />
+        </div>
+
+        <div class="col-4">
+            <input type="submit" value="Search" class="btn btn-success" />
+        </div>
+    </form>
+</div>
+
+
 @if(Model.Count() > 0)
 {
     <table class="table table-striped table-hover table-bordered">
@@ -23,6 +62,7 @@
                 <th>@Html.DisplayNameFor(e => e.Age)</th>
                 <th>@Html.DisplayNameFor(e => e.Address)</th>
                 <th>@Html.DisplayNameFor(e => e.Salary)</th>
+                <th scope="col">@Html.DisplayNameFor(e => e.Department)</th>
                 <th>@Html.DisplayNameFor(e => e.IsActive)</th>
                 <th>@Html.DisplayNameFor(e => e.Email)</th>
                 @* <th>@Html.DisplayNameFor(e => e.PhoneNumber)</th> *@
@@ -43,27 +83,17 @@
                     <td>@employee.Name</td>
                     <td>@employee.Age</td>
                     <td>@employee.Address</td>
+                    <td>@Html.DisplayFor(e => employee.Department.Name)</td>
                     <td>@Html.DisplayFor(e => employee.Salary)</td>
                     <td>@Html.DisplayFor(e => employee.IsActive)</td>
                     <td>@Html.DisplayFor(e => employee.Email)</td>
                     <td>@employee.Gender</td>
                     <td>@employee.CreationDate</td>
                     <td>@employee.IsDeleted</td>
-                    <td>
-                        <a asp-controller="Employee" asp-action="Details" asp-route-id="@employee.Id" class="btn btn-warning">
-                            <i class="fa-solid fa-eye"></i> Details
-                        </a>
-                    </td>
-                    <td>
-                        <a asp-controller="Employee" asp-action="Edit" asp-route-id="@employee.Id" class="btn btn-success">
-                            <i class="fa-solid fa-edit"></i> Edit
-                        </a>
-                    </td>
-                    <td>
-                        <a asp-controller="Employee" asp-action="Delete" asp-route-id="@employee.Id" class="btn btn-danger">
-                            <i class="fa-solid fa-trash"></i> Delete
-                        </a>
-                    </td>
+
+
+                    <partial name="_ButtonsPartial" model="@employee.Id" />
+                    @* For rendering the buttons in _ButtonsPartial  *@
                 </tr>
             }
         </tbody>
@@ -75,4 +105,5 @@ else
         <h4>There are no Employees <i class="fa-solid fa-circle-exclamation"></i></h4>
     </div>
 }
+
 

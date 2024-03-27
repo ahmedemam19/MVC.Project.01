@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -79,6 +80,12 @@ namespace MVC.Project.DAL.Models
 
         public bool IsDeleted { get; set; }
 
+
+        public int? DepartmentId { get; set; } // Foregin Key Column
+
+
+        // Navigational Prop [One]
+        public Department Department { get; set; }
 
     }
 }

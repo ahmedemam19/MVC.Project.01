@@ -54,8 +54,15 @@ namespace MVC.Project.PL.Controllers
             if (ModelState.IsValid) // Server side validation 
             {
                 var count = _deparmtentsRepo.Add(department);
+
+                // 3. TempData : to tranfer Data from the Current request (Create) to the Subsquent request (Index)
+
                 if (count > 0)
-                    return RedirectToAction(nameof(Index));
+                    TempData["Message"] = "Department is Created Successfuly";
+                else
+                    TempData["Message"] = "Error occured while Creating the Department";
+
+                return RedirectToAction(nameof(Index));
             }
             return View(department);
         }
