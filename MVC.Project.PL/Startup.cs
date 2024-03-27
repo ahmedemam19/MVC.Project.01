@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using MVC.Project.BLL.Interfaces;
 using MVC.Project.BLL.Repositories;
 using MVC.Project.DAL.Data;
+using MVC.Project.PL.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,8 +38,11 @@ namespace MVC.Project.PL
                 options.UseSqlServer(Configuration.GetConnectionString("defaultConnection"));
             });
 
-            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
+            //ApplicationServicesExtension.AddApplicationServices(services); // Static Method , Found in Folder [ Extensions ]
+            services.AddApplicationServices(); // Extension Method
+
+
 
             services.AddIdentity<IdentityUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
