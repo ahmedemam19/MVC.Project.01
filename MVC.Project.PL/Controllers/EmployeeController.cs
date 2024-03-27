@@ -27,18 +27,20 @@ namespace MVC.Project.PL.Controllers
         // Return all the Employees in the EmployeeRepo
         public IActionResult Index()
         {
+            TempData.Keep();
+
             // Binding through View Dictionary : Data Sent from the Action to View [one way]
 
             // 1. ViewData
             // 1. ViewData is a Dictionary Type Property (introduced in ASP .NET Framework 3.5)
             //    => It helps us to transfer the data from controller[Action] to View
-            ViewData["Message"] = "Hello From ViewData";
+            //ViewData["Message"] = "Hello From ViewData";
 
 
             // 2. ViewBag
             // 2. ViewBag is a Dynamic Type Property (introduced in ASP .NET Framework 4.0 based on dynamic feature
             //    => It helps us to transfer the data from controller[Action] to view
-            ViewBag.Message = "Hello ViewBag";
+            //ViewBag.Message = "Hello ViewBag";
 
 
             var employees = _employeeRepository.GetAll();
@@ -62,8 +64,16 @@ namespace MVC.Project.PL.Controllers
             if(ModelState.IsValid) // Server side validation 
             {
                 var count = _employeeRepository.Add(employee);
+
+                // 3. TempData : to tranfer Data from the Current request (Create) to the Subsquent request (Index)
+
                 if (count > 0)
-                    return RedirectToAction(nameof(Index));
+                    TempData["Message"] = "Employee is Created Successfuly";
+                else
+                    TempData["Message"] = "Error occured while Creating the Employee";
+
+                return RedirectToAction(nameof(Index));
+
             }
             return View(employee);
         }

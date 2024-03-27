@@ -4,13 +4,18 @@
 @{
     ViewData["Title"] = "Index";
 
-    string ViewDataMessage = ViewData["Message"] as string; // Enforce type safety -> requires type Conversion
+    // string ViewDataMessage = ViewData["Message"] as string; // Enforce type safety -> requires type Conversion
 
-    string ViewBagMessage = ViewBag.Message; // Compiler Cant Enforce typr safety -> dont require type Conversion
+    // string ViewBagMessage = ViewBag.Message; // Compiler Cant Enforce typr safety -> dont require type Conversion
 
 }
 
-
+@if(!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+    <div class="alert alert-primary">
+        @TempData["Message"]
+    </div>
+}
 
 
 
