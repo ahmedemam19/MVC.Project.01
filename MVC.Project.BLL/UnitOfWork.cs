@@ -1,7 +1,9 @@
 ﻿using MVC.Project.BLL.Interfaces;
 using MVC.Project.BLL.Repositories;
 using MVC.Project.DAL.Data;
+using MVC.Project.DAL.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,21 +11,44 @@ using System.Threading.Tasks;
 
 namespace MVC.Project.BLL
 {
-    public class UnitOfWork : IUnitOfWork , IDisposable
+    public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public IEmployeeRepository EmployeeRepository { get; set; } = null;
-        public IDepartmentRepository DepartmentRepository { get; set; } = null;
+
+        private Hashtable _repositories;
 
 
         public UnitOfWork(ApplicationDbContext dbContext) // Ask CLR for creating object from DBContext
         {
             _dbContext = dbContext;
-            EmployeeRepository = new EmployeeRepository(_dbContext);
-            DepartmentRepository = new DepartmentRepository(_dbContext);
+            _repositories = new Hashtable();
         }
 
+
+        public IGenericRepository<T> Repository<T>() where T : ModelBase
+        {
+            var Key = typeof(T).Name; // Employee
+
+            if(!_repositories.ContainsKey(Key))
+            {
+                
+                if (Key == nameof(Employee))
+                {
+                    var repository = new EmployeeRepository(_dbContext);
+                    _repositories.Add(Key , repository);
+                }
+                else
+                {
+                    var repository = new GenericRepository<T>(_dbContext);
+                    _repositories.Add(Key, repository);
+                }
+            }
+
+            return _repositories[Key] as IGenericRepository<T>;
+        }
+
+        
         public int Complete()
         {
             return _dbContext.SaveChanges();
@@ -33,5 +58,7 @@ namespace MVC.Project.BLL
         {
             _dbContext.Dispose(); // to close the connection
         }
+
+        
     }
 }

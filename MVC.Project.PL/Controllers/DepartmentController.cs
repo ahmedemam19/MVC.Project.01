@@ -43,7 +43,7 @@ namespace MVC.Project.PL.Controllers
         // Return all the departments in the DepartmentRepo
         public IActionResult Index()
         {
-            var departments = _unitOfWork.DepartmentRepository.GetAll();
+            var departments = _unitOfWork.Repository<Department>().GetAll();
 
             var mappedDeps = _mapper.Map<IEnumerable<Department>, IEnumerable<DepartmentViewModel>>(departments);
 
@@ -71,7 +71,7 @@ namespace MVC.Project.PL.Controllers
                 var mappedDep = _mapper.Map<DepartmentViewModel, Department>(departmentVM);
 
 
-                _unitOfWork.DepartmentRepository.Add(mappedDep);
+                _unitOfWork.Repository<Department>().Add(mappedDep);
 
                 // 3. TempData : to tranfer Data from the Current request (Create) to the Subsquent request (Index)
 
@@ -99,7 +99,7 @@ namespace MVC.Project.PL.Controllers
             if (id is null)
                 return BadRequest(); // 400
 
-            var department = _unitOfWork.DepartmentRepository.Get(id.Value);
+            var department = _unitOfWork.Repository<Department>().Get(id.Value);
 
             var mappedDep = _mapper.Map<Department, DepartmentViewModel>(department);
 
@@ -144,7 +144,7 @@ namespace MVC.Project.PL.Controllers
             {
                 var mappedDep = _mapper.Map<DepartmentViewModel, Department>(departmentVM);
 
-                _unitOfWork.DepartmentRepository.Update(mappedDep);
+                _unitOfWork.Repository<Department>().Update(mappedDep);
                 _unitOfWork.Complete();
 
                 return RedirectToAction(nameof(Index));
@@ -183,7 +183,7 @@ namespace MVC.Project.PL.Controllers
             {
                 var mappedDep = _mapper.Map<DepartmentViewModel, Department>(departmentVM);
 
-                _unitOfWork.DepartmentRepository.Delete(mappedDep);
+                _unitOfWork.Repository<Department>().Delete(mappedDep);
                 _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
