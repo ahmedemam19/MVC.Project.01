@@ -12,6 +12,7 @@ using MVC.Project.BLL.Interfaces;
 using MVC.Project.BLL.Repositories;
 using MVC.Project.DAL.Data;
 using MVC.Project.PL.Extensions;
+using MVC.Project.PL.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +43,8 @@ namespace MVC.Project.PL
             //ApplicationServicesExtension.AddApplicationServices(services); // Static Method , Found in Folder [ Extensions ]
             services.AddApplicationServices(); // Extension Method
 
+
+            services.AddAutoMapper(mapper => mapper.AddProfile(new MappingProfile()));
 
 
             services.AddIdentity<IdentityUser, IdentityRole>()

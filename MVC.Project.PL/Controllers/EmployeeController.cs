@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using MVC.Project.BLL.Interfaces;
 using MVC.Project.BLL.Repositories;
 using MVC.Project.DAL.Models;
+using MVC.Project.PL.ViewModels;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.Xml;
 
@@ -13,13 +17,15 @@ namespace MVC.Project.PL.Controllers
 {
     public class EmployeeController : Controller
     {
+        private readonly IMapper _mapper;
         private readonly IEmployeeRepository _employeeRepository;
         //private readonly IDepartmentRepository _departmentRepository;
         private readonly IWebHostEnvironment _env; // For the [ catch in Action Edit ]
 
         // Ask CLR for creating object from class implementing IEmployeeRepository
-        public EmployeeController(IEmployeeRepository employeeRepository, /*IDepartmentRepository departmentRepository ,*/ IWebHostEnvironment env)
+        public EmployeeController(IMapper mapper,  IEmployeeRepository employeeRepository, /*IDepartmentRepository departmentRepository ,*/ IWebHostEnvironment env)
         {
+            _mapper = mapper;
             _employeeRepository = employeeRepository;
             //_departmentRepository = departmentRepository;
             _env = env;
@@ -52,9 +58,9 @@ namespace MVC.Project.PL.Controllers
             else
                  employees = _employeeRepository.SearchByName(SearchInput.ToLower());
 
-            return View(employees);
+            var mappedEmps = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(employees);
 
-
+            return View(mappedEmps);
 
         }
         #endregion
@@ -72,12 +78,17 @@ namespace MVC.Project.PL.Controllers
 
         // Action for Validating the info of employee entered by the user and add it to EmployeeRepo if true .
         [HttpPost]
-        public IActionResult Create(Employee employee)
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(EmployeeViewModel employeeVM)
         {
             // first it checks if the info added by the user compatible by the system requirments
             if(ModelState.IsValid) // Server side validation 
             {
-                var count = _employeeRepository.Add(employee);
+                // Mapping from EmployeeViewModel to Employee
+                var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
+
+
+                var count = _employeeRepository.Add(mappedEmp);
 
                 // 3. TempData : to tranfer Data from the Current request (Create) to the Subsquent request (Index)
 
@@ -89,7 +100,7 @@ namespace MVC.Project.PL.Controllers
                 return RedirectToAction(nameof(Index));
 
             }
-            return View(employee);
+            return View(employeeVM);
         }
         #endregion
 
@@ -102,6 +113,9 @@ namespace MVC.Project.PL.Controllers
             if (id is null)
                 return BadRequest(); // 400
             var employees = _employeeRepository.Get(id.Value);
+
+            var mappedEmp = _mapper.Map<Employee, EmployeeViewModel>(employees);
+
             if (employees is null)
                 return NotFound(); //404
             return View(ViewName, employees);
@@ -120,16 +134,20 @@ namespace MVC.Project.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken] // Action FIlter used to prevent cross-site request forgery (CSRF) attacks
-        public IActionResult Edit([FromRoute] int? id, Employee employee) // [FromRoute] indicates that the parameter should be bound from the [ route data ] of the incoming request URL.
+        public IActionResult Edit([FromRoute] int? id, EmployeeViewModel employeeVM) // [FromRoute] indicates that the parameter should be bound from the [ route data ] of the incoming request URL.
         {
-            if (id != employee.Id)
+            if (id != employeeVM.Id)
                 return BadRequest();
             if (!ModelState.IsValid)
-                return View(employee);
+                return View(employeeVM);
 
             try
             {
-                _employeeRepository.Update(employee);
+
+                var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
+
+
+                _employeeRepository.Update(mappedEmp);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -139,7 +157,7 @@ namespace MVC.Project.PL.Controllers
                 else
                     ModelState.AddModelError(string.Empty, "An Error has Occurred during updating your Employee Info");
 
-                return View(employee);
+                return View(employeeVM);
             }
         }
         #endregion
@@ -152,11 +170,14 @@ namespace MVC.Project.PL.Controllers
         }
 
         [HttpPost]
-        public IActionResult Delete(Employee employee)
+        public IActionResult Delete(EmployeeViewModel employeeVM)
         {
             try
             {
-                _employeeRepository.Delete(employee);
+                var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
+
+
+                _employeeRepository.Delete(mappedEmp);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -166,7 +187,7 @@ namespace MVC.Project.PL.Controllers
                 else
                     ModelState.AddModelError(string.Empty, "An Error has Occurred during deleting your Employee");
 
-                return View(employee);
+                return View(employeeVM);
             }
         } 
         #endregion
