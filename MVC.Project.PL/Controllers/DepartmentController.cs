@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using MVC.Project.BLL.Interfaces;
 using MVC.Project.BLL.Repositories;
 using MVC.Project.DAL.Models;
+using MVC.Project.PL.ViewModels;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace MVC.Project.PL.Controllers
 {
@@ -14,13 +18,21 @@ namespace MVC.Project.PL.Controllers
 
     public class DepartmentController : Controller
     {
-        private readonly IDepartmentRepository _deparmtentsRepo;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+        //private readonly IDepartmentRepository _deparmtentsRepo;
         private readonly IWebHostEnvironment _env; // For the [ catch in Action Edit ]
 
         // Ask CLR for creating object from class implementing IDepartmentRepository
-        public DepartmentController(IDepartmentRepository departmentRepo, IWebHostEnvironment env)
+        public DepartmentController(
+            IUnitOfWork unitOfWork,
+            IMapper mapper, 
+            //IDepartmentRepository departmentRepo, 
+            IWebHostEnvironment env)
         {
-            _deparmtentsRepo = departmentRepo;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+            //_deparmtentsRepo = departmentRepo;
             _env = env;
         }
 
@@ -31,8 +43,11 @@ namespace MVC.Project.PL.Controllers
         // Return all the departments in the DepartmentRepo
         public IActionResult Index()
         {
-            var departments = _deparmtentsRepo.GetAll();
-            return View(departments);
+            var departments = _unitOfWork.Repository<Department>().GetAll();
+
+            var mappedDeps = _mapper.Map<IEnumerable<Department>, IEnumerable<DepartmentViewModel>>(departments);
+
+            return View(mappedDeps);
         }
 
         #endregion
@@ -49,13 +64,18 @@ namespace MVC.Project.PL.Controllers
 
         // Action for Validating the info of departments entered by the user and add it to the DepartmentRepo if true .
         [HttpPost]
-        public IActionResult Create(Department department)
+        public IActionResult Create(DepartmentViewModel departmentVM)
         {
             if (ModelState.IsValid) // Server side validation 
             {
-                var count = _deparmtentsRepo.Add(department);
+                var mappedDep = _mapper.Map<DepartmentViewModel, Department>(departmentVM);
+
+
+                _unitOfWork.Repository<Department>().Add(mappedDep);
 
                 // 3. TempData : to tranfer Data from the Current request (Create) to the Subsquent request (Index)
+
+                var count = _unitOfWork.Complete();
 
                 if (count > 0)
                     TempData["Message"] = "Department is Created Successfuly";
@@ -64,7 +84,7 @@ namespace MVC.Project.PL.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            return View(department);
+            return View(departmentVM);
         }
 
         #endregion
@@ -79,12 +99,14 @@ namespace MVC.Project.PL.Controllers
             if (id is null)
                 return BadRequest(); // 400
 
-            var department = _deparmtentsRepo.Get(id.Value);
+            var department = _unitOfWork.Repository<Department>().Get(id.Value);
+
+            var mappedDep = _mapper.Map<Department, DepartmentViewModel>(department);
 
             if (department is null)
                 return NotFound(); // 404
 
-            return View(ViewName, department);
+            return View(ViewName, mappedDep);
         }
 
         #endregion
@@ -109,18 +131,21 @@ namespace MVC.Project.PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken] // Action FIlter used to prevent cross-site request forgery (CSRF) attacks
-        public IActionResult Edit([FromRoute] int id, Department department) // [FromRoute] indicates that the parameter should be bound from the [ route data ] of the incoming request URL.
+        public IActionResult Edit([FromRoute] int id, DepartmentViewModel departmentVM) // [FromRoute] indicates that the parameter should be bound from the [ route data ] of the incoming request URL.
         {
 
-            if (id != department.Id)
+            if (id != departmentVM.Id)
                 return BadRequest();
 
             if (!ModelState.IsValid)
-                return View(department);
+                return View(departmentVM);
 
             try
             {
-                _deparmtentsRepo.Update(department);
+                var mappedDep = _mapper.Map<DepartmentViewModel, Department>(departmentVM);
+
+                _unitOfWork.Repository<Department>().Update(mappedDep);
+                _unitOfWork.Complete();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -134,7 +159,7 @@ namespace MVC.Project.PL.Controllers
                 else
                     ModelState.AddModelError(string.Empty, "An Error has Occurred during updating yuor Department"); // Should be written in a JSON file
 
-                return View(department);
+                return View(departmentVM);
             }
         }
 
@@ -152,11 +177,14 @@ namespace MVC.Project.PL.Controllers
 
 
         [HttpPost]
-        public IActionResult Delete(Department department)
+        public IActionResult Delete(DepartmentViewModel departmentVM)
         {
             try
             {
-                _deparmtentsRepo.Delete(department);
+                var mappedDep = _mapper.Map<DepartmentViewModel, Department>(departmentVM);
+
+                _unitOfWork.Repository<Department>().Delete(mappedDep);
+                _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -169,7 +197,7 @@ namespace MVC.Project.PL.Controllers
                 else
                     ModelState.AddModelError(string.Empty, "An Error has Occurred during Deleting your Department"); // Should be written in a JSON file
 
-                return View(department);
+                return View(departmentVM);
 
             }
         }

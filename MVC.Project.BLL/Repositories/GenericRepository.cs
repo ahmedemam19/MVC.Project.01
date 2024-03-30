@@ -20,26 +20,16 @@ namespace MVC.Project.BLL.Repositories
             _dbContext = dbContext;
         }
 
-        public int Add(T entity)
-        {
-            _dbContext.Set<T>().Add(entity);
-            //_dbContext.Add(entity);
-            return _dbContext.SaveChanges();
-        }
+        public void Add(T entity)
+            => _dbContext.Set<T>().Add(entity);
 
-        public int Update(T entity)
-        {
-            _dbContext.Set<T>().Update(entity);
-            //_dbContext.Update(entity);
-            return _dbContext.SaveChanges();
-        }
 
-        public int Delete(T entity)
-        {
-            _dbContext.Set<T>().Remove(entity);
-            //_dbContext.Remove(entity);
-            return _dbContext.SaveChanges();
-        }
+        public void Update(T entity)
+            => _dbContext.Set<T>().Update(entity);
+        
+
+        public void Delete(T entity)
+            => _dbContext.Set<T>().Remove(entity);
 
 
         public T Get(int id)

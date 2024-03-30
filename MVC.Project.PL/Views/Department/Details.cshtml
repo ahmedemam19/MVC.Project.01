@@ -1,5 +1,4 @@
-﻿
-@model Department
+﻿@model DepartmentViewModel
 
 
 @{
@@ -16,6 +15,6 @@
     @* For Rendering the components in the DetailsDeleteDepartmentPartial *@
     <partial name="PartialViews/DetailsDeleteDepartmentPartial" />
 
-    <a asp-controller="Department" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a> | 
+    @* <a asp-controller="Department" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a> | *@ 
     <a asp-controller="Department" asp-action="Index" class="btn btn-secondary">Back to list</a>
 </div>

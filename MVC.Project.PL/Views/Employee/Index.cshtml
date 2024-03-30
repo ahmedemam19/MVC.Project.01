@@ -1,5 +1,5 @@
 ﻿
-@model IEnumerable<Employee>
+@model IEnumerable<EmployeeViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -69,8 +69,8 @@
                 @* <th>@Html.DisplayNameFor(e => e.HiringDate)</th> *@
                 <th>@Html.DisplayNameFor(e => e.Gender)</th>
                 @* <th>@Html.DisplayNameFor(e => e.EmpType)</th> *@
-                <th>@Html.DisplayNameFor(e => e.CreationDate)</th>
-                <th>@Html.DisplayNameFor(e => e.IsDeleted)</th>
+                @* <th>@Html.DisplayNameFor(e => e.CreationDate)</th>
+                <th>@Html.DisplayNameFor(e => e.IsDeleted)</th> *@
                 <th>Details</th>
                 <th>Update</th>
                 <th>Delete</th>
@@ -83,13 +83,13 @@
                     <td>@employee.Name</td>
                     <td>@employee.Age</td>
                     <td>@employee.Address</td>
-                    <td>@Html.DisplayFor(e => employee.Department.Name)</td>
                     <td>@Html.DisplayFor(e => employee.Salary)</td>
+                    <td>@Html.DisplayFor(e => employee.Department.Name)</td>
                     <td>@Html.DisplayFor(e => employee.IsActive)</td>
                     <td>@Html.DisplayFor(e => employee.Email)</td>
                     <td>@employee.Gender</td>
-                    <td>@employee.CreationDate</td>
-                    <td>@employee.IsDeleted</td>
+                   @*  <td>@employee.CreationDate</td>
+                    <td>@employee.IsDeleted</td> *@
 
 
                     <partial name="_ButtonsPartial" model="@employee.Id" />

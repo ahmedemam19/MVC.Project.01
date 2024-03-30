@@ -2,14 +2,17 @@
 
 @* File for the things that reapet in the Details and Delete for Employee *@
 
-@model Employee
+@model EmployeeViewModel
 
-@inject IDepartmentRepository _departmentRepo
+@* @inject IDepartmentRepository _departmentRepo *@
+
+@inject IUnitOfWork _unitOfWork
+
 
 
 @{
     // to get all departments and show it in the SelectList
-    var departments = new SelectList(_departmentRepo.GetAll(), nameof(Department.Id), nameof(Department.Name));
+    var departments = new SelectList(_unitOfWork.Repository<Department>().GetAll(), nameof(Department.Id), nameof(Department.Name));
 }
 
 <div class="form-group">
@@ -50,7 +53,7 @@
     <input asp-for="HiringDate" class="form-control" readonly />
     <label class="col-form-label" asp-for="HiringDate"></label>
 </div>
-<div class="form-group">
+@* <div class="form-group">
     <input asp-for="IsDeleted" class="form-check-input" readonly />
     <label class="col-form-label" asp-for="IsDeleted"></label>
-</div>
+</div> *@
