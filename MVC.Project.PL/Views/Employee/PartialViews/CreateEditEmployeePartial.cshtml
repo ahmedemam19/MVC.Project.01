@@ -3,13 +3,14 @@
 
 @model EmployeeViewModel
 
-@inject IDepartmentRepository _departmentRepo
+@* @inject IDepartmentRepository _departmentRepo *@
 
+@inject IUnitOfWork _unitOfWork
 
 @{
     // to get all departments and show it in the SelectList
     // _departmentRepo.GetAll() we added it after removing [ IDepartmentRepository departmentRepository ] from EmployeeController Constructor
-    var departments = new SelectList(_departmentRepo.GetAll(), nameof(Department.Id), nameof(Department.Name));
+    var departments = new SelectList(_unitOfWork.DepartmentRepository.GetAll(), nameof(Department.Id), nameof(Department.Name));
 }
 
 

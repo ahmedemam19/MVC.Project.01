@@ -17,16 +17,23 @@ namespace MVC.Project.PL.Controllers
 {
     public class EmployeeController : Controller
     {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly IEmployeeRepository _employeeRepository;
+        //private readonly IEmployeeRepository _employeeRepository;
         //private readonly IDepartmentRepository _departmentRepository;
         private readonly IWebHostEnvironment _env; // For the [ catch in Action Edit ]
 
         // Ask CLR for creating object from class implementing IEmployeeRepository
-        public EmployeeController(IMapper mapper,  IEmployeeRepository employeeRepository, /*IDepartmentRepository departmentRepository ,*/ IWebHostEnvironment env)
+        public EmployeeController(
+            IUnitOfWork unitOfWork,
+            IMapper mapper, 
+            //IEmployeeRepository employeeRepository,
+            /*IDepartmentRepository departmentRepository ,*/ 
+            IWebHostEnvironment env)
         {
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _employeeRepository = employeeRepository;
+            //_employeeRepository = employeeRepository;
             //_departmentRepository = departmentRepository;
             _env = env;
         }
@@ -54,9 +61,9 @@ namespace MVC.Project.PL.Controllers
             var employees = Enumerable.Empty<Employee>();
 
             if (string.IsNullOrEmpty(SearchInput))
-                 employees = _employeeRepository.GetAll();
+                 employees = _unitOfWork.EmployeeRepository.GetAll();
             else
-                 employees = _employeeRepository.SearchByName(SearchInput.ToLower());
+                 employees = _unitOfWork.EmployeeRepository.SearchByName(SearchInput.ToLower());
 
             var mappedEmps = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeViewModel>>(employees);
 
@@ -88,9 +95,11 @@ namespace MVC.Project.PL.Controllers
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
 
 
-                var count = _employeeRepository.Add(mappedEmp);
+                _unitOfWork.EmployeeRepository.Add(mappedEmp);
 
                 // 3. TempData : to tranfer Data from the Current request (Create) to the Subsquent request (Index)
+
+                var count = _unitOfWork.Complete();
 
                 if (count > 0)
                     TempData["Message"] = "Employee is Created Successfuly";
@@ -112,13 +121,13 @@ namespace MVC.Project.PL.Controllers
         {
             if (id is null)
                 return BadRequest(); // 400
-            var employees = _employeeRepository.Get(id.Value);
+            var employees = _unitOfWork.EmployeeRepository.Get(id.Value);
 
             var mappedEmp = _mapper.Map<Employee, EmployeeViewModel>(employees);
 
             if (employees is null)
                 return NotFound(); //404
-            return View(ViewName, employees);
+            return View(ViewName, mappedEmp);
         }
         #endregion
 
@@ -146,8 +155,8 @@ namespace MVC.Project.PL.Controllers
 
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
 
-
-                _employeeRepository.Update(mappedEmp);
+                _unitOfWork.EmployeeRepository.Update(mappedEmp);
+                _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -177,7 +186,8 @@ namespace MVC.Project.PL.Controllers
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
 
 
-                _employeeRepository.Delete(mappedEmp);
+                _unitOfWork.EmployeeRepository.Delete(mappedEmp);
+                _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)

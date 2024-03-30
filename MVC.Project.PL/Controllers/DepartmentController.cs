@@ -18,15 +18,21 @@ namespace MVC.Project.PL.Controllers
 
     public class DepartmentController : Controller
     {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly IDepartmentRepository _deparmtentsRepo;
+        //private readonly IDepartmentRepository _deparmtentsRepo;
         private readonly IWebHostEnvironment _env; // For the [ catch in Action Edit ]
 
         // Ask CLR for creating object from class implementing IDepartmentRepository
-        public DepartmentController(IMapper mapper, IDepartmentRepository departmentRepo, IWebHostEnvironment env)
+        public DepartmentController(
+            IUnitOfWork unitOfWork,
+            IMapper mapper, 
+            //IDepartmentRepository departmentRepo, 
+            IWebHostEnvironment env)
         {
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _deparmtentsRepo = departmentRepo;
+            //_deparmtentsRepo = departmentRepo;
             _env = env;
         }
 
@@ -37,7 +43,7 @@ namespace MVC.Project.PL.Controllers
         // Return all the departments in the DepartmentRepo
         public IActionResult Index()
         {
-            var departments = _deparmtentsRepo.GetAll();
+            var departments = _unitOfWork.DepartmentRepository.GetAll();
 
             var mappedDeps = _mapper.Map<IEnumerable<Department>, IEnumerable<DepartmentViewModel>>(departments);
 
@@ -65,9 +71,11 @@ namespace MVC.Project.PL.Controllers
                 var mappedDep = _mapper.Map<DepartmentViewModel, Department>(departmentVM);
 
 
-                var count = _deparmtentsRepo.Add(mappedDep);
+                _unitOfWork.DepartmentRepository.Add(mappedDep);
 
                 // 3. TempData : to tranfer Data from the Current request (Create) to the Subsquent request (Index)
+
+                var count = _unitOfWork.Complete();
 
                 if (count > 0)
                     TempData["Message"] = "Department is Created Successfuly";
@@ -91,14 +99,14 @@ namespace MVC.Project.PL.Controllers
             if (id is null)
                 return BadRequest(); // 400
 
-            var department = _deparmtentsRepo.Get(id.Value);
+            var department = _unitOfWork.DepartmentRepository.Get(id.Value);
 
             var mappedDep = _mapper.Map<Department, DepartmentViewModel>(department);
 
             if (department is null)
                 return NotFound(); // 404
 
-            return View(ViewName, department);
+            return View(ViewName, mappedDep);
         }
 
         #endregion
@@ -136,7 +144,8 @@ namespace MVC.Project.PL.Controllers
             {
                 var mappedDep = _mapper.Map<DepartmentViewModel, Department>(departmentVM);
 
-                _deparmtentsRepo.Update(mappedDep);
+                _unitOfWork.DepartmentRepository.Update(mappedDep);
+                _unitOfWork.Complete();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -174,7 +183,8 @@ namespace MVC.Project.PL.Controllers
             {
                 var mappedDep = _mapper.Map<DepartmentViewModel, Department>(departmentVM);
 
-                _deparmtentsRepo.Delete(mappedDep);
+                _unitOfWork.DepartmentRepository.Delete(mappedDep);
+                _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
