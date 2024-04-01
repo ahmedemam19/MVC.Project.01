@@ -11,6 +11,7 @@ namespace MVC.Project.PL.Helpers
             CreateMap<EmployeeViewModel, Employee>().ReverseMap();
 
             CreateMap<DepartmentViewModel, Department>().ReverseMap();
+
         }
     }
 }
