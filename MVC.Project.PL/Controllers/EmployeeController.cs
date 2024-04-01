@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Options;
 using Microsoft.Extensions.Hosting;
 using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using MVC.Project.BLL.Interfaces;
 using MVC.Project.BLL.Repositories;
 using MVC.Project.DAL.Models;
+using MVC.Project.PL.Helpers;
 using MVC.Project.PL.ViewModels;
 using System;
 using System.Collections;
@@ -93,11 +95,16 @@ namespace MVC.Project.PL.Controllers
             // first it checks if the info added by the user compatible by the system requirments
             if(ModelState.IsValid) // Server side validation 
             {
+
+                employeeVM.ImageName = DoucmentSetting.UploadFile(employeeVM.Image, "images");
+
                 // Mapping from EmployeeViewModel to Employee
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
 
+                
 
                 _unitOfWork.Repository<Employee>().Add(mappedEmp);
+
 
                 // 3. TempData : to tranfer Data from the Current request (Create) to the Subsquent request (Index)
 

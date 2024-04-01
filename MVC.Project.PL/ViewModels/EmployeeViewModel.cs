@@ -1,4 +1,5 @@
-﻿using MVC.Project.DAL.Models;
+﻿using Microsoft.AspNetCore.Http;
+using MVC.Project.DAL.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -56,6 +57,13 @@ namespace MVC.Project.PL.ViewModels
 
         // Navigational Prop [One]
         public Department Department { get; set; }
+
+
+        public IFormFile Image { get; set; }
+
+
+        public string ImageName { get; set; }
+
 
     }
 }

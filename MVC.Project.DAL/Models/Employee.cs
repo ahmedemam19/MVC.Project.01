@@ -31,6 +31,8 @@ namespace MVC.Project.DAL.Models
     public class Employee : ModelBase
     {
 
+        #region Data
+
         public string Name { get; set; }
 
 
@@ -51,7 +53,7 @@ namespace MVC.Project.DAL.Models
 
         public string PhoneNumber { get; set; }
 
-         
+
         public DateTime HiringDate { get; set; }
 
 
@@ -59,6 +61,11 @@ namespace MVC.Project.DAL.Models
 
 
         public EmpType EmpType { get; set; }
+
+        #endregion
+
+
+        public string ImageName { get; set; }
 
 
         public int? DepartmentId { get; set; }
