@@ -12,6 +12,6 @@ namespace MVC.Project.BLL.Interfaces
         public IGenericRepository<T> Repository<T>() where T : ModelBase;
 
 
-        int Complete();
+        Task<int> Complete();
     }
 }

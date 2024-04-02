@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MVC.Project.BLL
 {
-    public class UnitOfWork : IUnitOfWork, IDisposable
+    public class UnitOfWork : IUnitOfWork, IAsyncDisposable
     {
         private readonly ApplicationDbContext _dbContext;
 
@@ -49,14 +49,14 @@ namespace MVC.Project.BLL
         }
 
         
-        public int Complete()
+        public async Task<int> Complete()
         {
-            return _dbContext.SaveChanges();
+            return await _dbContext.SaveChangesAsync();
         }
 
-        public void Dispose()
+        public async ValueTask DisposeAsync()
         {
-            _dbContext.Dispose(); // to close the connection
+            await _dbContext.DisposeAsync(); // to close the connection
         }
 
         

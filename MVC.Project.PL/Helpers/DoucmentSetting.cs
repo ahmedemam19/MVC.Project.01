@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace MVC.Project.PL.Helpers
 {
     public static class DoucmentSetting
     {
 
-        public static string UploadFile(IFormFile file, string folderName)
+        public static async Task<string> UploadFile(IFormFile file, string folderName)
         {
             // 1. Get Loacted Folder Path
 
@@ -31,7 +32,7 @@ namespace MVC.Project.PL.Helpers
             using var fileStream = new FileStream(filePath, FileMode.Create);
 
 
-            file.CopyTo(fileStream);
+            await file.CopyToAsync(fileStream);
             // the contnet of [ file ] is copied to [ fileStream ] on Connection [ filePath ] to Ctreate using [ FileMode.Create ]
 
 

@@ -10,7 +10,7 @@
 @{
     // to get all departments and show it in the SelectList
     // _departmentRepo.GetAll() we added it after removing [ IDepartmentRepository departmentRepository ] from EmployeeController Constructor
-    var departments = new SelectList(_unitOfWork.Repository<Department>().GetAll(), nameof(Department.Id), nameof(Department.Name));
+    var departments = new SelectList( await _unitOfWork.Repository<Department>().GetAllAsync(), nameof(Department.Id), nameof(Department.Name));
 }
 
 

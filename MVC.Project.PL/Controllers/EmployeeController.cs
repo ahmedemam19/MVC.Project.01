@@ -14,6 +14,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.Xml;
+using System.Threading.Tasks;
 
 namespace MVC.Project.PL.Controllers
 {
@@ -43,9 +44,11 @@ namespace MVC.Project.PL.Controllers
 
         #region Action Index
         // Return all the Employees in the EmployeeRepo
-        public IActionResult Index(string SearchInput) // [ string SearchInput ] for the search input
+        public async Task<IActionResult> Index(string SearchInput) // [ string SearchInput ] for the search input
         {
             TempData.Keep();
+
+            #region Notes
 
             // Binding through View Dictionary : Data Sent from the Action to View [one way]
 
@@ -58,14 +61,15 @@ namespace MVC.Project.PL.Controllers
             // 2. ViewBag
             // 2. ViewBag is a Dynamic Type Property (introduced in ASP .NET Framework 4.0 based on dynamic feature
             //    => It helps us to transfer the data from controller[Action] to view
-            //ViewBag.Message = "Hello ViewBag";
+            //ViewBag.Message = "Hello ViewBag"; 
+            #endregion
 
             var employees = Enumerable.Empty<Employee>();
 
             var employeeRepo = _unitOfWork.Repository<Employee>() as EmployeeRepository;
 
             if (string.IsNullOrEmpty(SearchInput))
-                 employees = employeeRepo.GetAll();
+                 employees = await employeeRepo.GetAllAsync();
             else
                  employees = employeeRepo.SearchByName(SearchInput.ToLower());
 
@@ -90,13 +94,13 @@ namespace MVC.Project.PL.Controllers
         // Action for Validating the info of employee entered by the user and add it to EmployeeRepo if true .
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(EmployeeViewModel employeeVM)
+        public async Task<IActionResult> Create(EmployeeViewModel employeeVM)
         {
             // first it checks if the info added by the user compatible by the system requirments
             if(ModelState.IsValid) // Server side validation 
             {
 
-                employeeVM.ImageName = DoucmentSetting.UploadFile(employeeVM.Image, "images");
+                employeeVM.ImageName = await DoucmentSetting.UploadFile(employeeVM.Image, "images");
 
                 // Mapping from EmployeeViewModel to Employee
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
@@ -108,7 +112,7 @@ namespace MVC.Project.PL.Controllers
 
                 // 3. TempData : to tranfer Data from the Current request (Create) to the Subsquent request (Index)
 
-                var count = _unitOfWork.Complete();
+                var count = await _unitOfWork.Complete();
 
                 if (count > 0)
                     TempData["Message"] = "Employee is Created Successfuly";
@@ -126,11 +130,11 @@ namespace MVC.Project.PL.Controllers
         // Action for returning the employee Details in the [ Details View ]
         [HttpGet]
         // the Action Details take two parameters (1) for the employee ID (2) for the ViewName for displaying the Employee Details
-        public ActionResult Details(int? id, string ViewName = "Details") 
+        public async Task<IActionResult> Details(int? id, string ViewName = "Details") 
         {
             if (id is null)
                 return BadRequest(); // 400
-            var employees = _unitOfWork.Repository<Employee>().Get(id.Value);
+            var employees = await _unitOfWork.Repository<Employee>().GetAsync(id.Value);
 
             var mappedEmp = _mapper.Map<Employee, EmployeeViewModel>(employees);
 
@@ -147,29 +151,34 @@ namespace MVC.Project.PL.Controllers
         #region Action Edit
         [HttpGet]
         // Edit Action take the Employee ID and return the Employee Details in the Edit View to Edit the Employee Info
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             //ViewData["Departments"] = _departmentRepository.GetAll(); // to return all departments in the Repository
 
-            return Details(id, "Edit");
+            return await Details(id, "Edit");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken] // Action FIlter used to prevent cross-site request forgery (CSRF) attacks
-        public IActionResult Edit([FromRoute] int? id, EmployeeViewModel employeeVM) // [FromRoute] indicates that the parameter should be bound from the [ route data ] of the incoming request URL.
+        public async Task<IActionResult> Edit([FromRoute] int? id, EmployeeViewModel employeeVM) // [FromRoute] indicates that the parameter should be bound from the [ route data ] of the incoming request URL.
         {
             if (id != employeeVM.Id)
                 return BadRequest();
             if (!ModelState.IsValid)
                 return View(employeeVM);
 
+
+
+
             try
             {
+
+                employeeVM.ImageName = await DoucmentSetting.UploadFile(employeeVM.Image, "images");
 
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
 
                 _unitOfWork.Repository<Employee>().Update(mappedEmp);
-                _unitOfWork.Complete();
+                await _unitOfWork.Complete();
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -186,13 +195,13 @@ namespace MVC.Project.PL.Controllers
 
         #region Action Delete
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            return Details(id, "Delete");
+            return await Details(id, "Delete");
         }
 
         [HttpPost]
-        public IActionResult Delete(EmployeeViewModel employeeVM)
+        public async Task<IActionResult> Delete(EmployeeViewModel employeeVM)
         {
             try
             {
@@ -203,7 +212,7 @@ namespace MVC.Project.PL.Controllers
 
                 _unitOfWork.Repository<Employee>().Delete(mappedEmp);
 
-                var count = _unitOfWork.Complete();
+                var count = await _unitOfWork.Complete();
                 if(count > 0)
                 {
                     DoucmentSetting.DeleteFile(employeeVM.ImageName, "images");
