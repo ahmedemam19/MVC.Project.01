@@ -136,6 +136,10 @@ namespace MVC.Project.PL.Controllers
 
             if (employees is null)
                 return NotFound(); //404
+
+            if(ViewName.Equals("Delete", StringComparison.OrdinalIgnoreCase))
+                TempData["ImageName"] = employees.ImageName;
+
             return View(ViewName, mappedEmp);
         }
         #endregion
@@ -192,12 +196,20 @@ namespace MVC.Project.PL.Controllers
         {
             try
             {
+                employeeVM.ImageName = TempData["ImageName"] as string;
+
                 var mappedEmp = _mapper.Map<EmployeeViewModel, Employee>(employeeVM);
 
 
                 _unitOfWork.Repository<Employee>().Delete(mappedEmp);
-                _unitOfWork.Complete();
-                return RedirectToAction(nameof(Index));
+
+                var count = _unitOfWork.Complete();
+                if(count > 0)
+                {
+                    DoucmentSetting.DeleteFile(employeeVM.ImageName, "images");
+                    return RedirectToAction(nameof(Index));
+                }
+                return View(employeeVM);
             }
             catch (Exception ex)
             {
