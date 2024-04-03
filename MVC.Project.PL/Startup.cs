@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using MVC.Project.BLL.Interfaces;
 using MVC.Project.BLL.Repositories;
 using MVC.Project.DAL.Data;
+using MVC.Project.DAL.Models;
 using MVC.Project.PL.Extensions;
 using MVC.Project.PL.Helpers;
 using System;
@@ -45,6 +46,31 @@ namespace MVC.Project.PL
 
 
             services.AddAutoMapper(mapper => mapper.AddProfile(new MappingProfile()));
+
+            services.AddScoped<UserManager<ApplicationUser>>();
+            services.AddScoped<SignInManager<ApplicationUser>>();
+            services.AddScoped<RoleManager<IdentityRole>>();
+
+
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.Password.RequiredUniqueChars = 2;
+                options.Password.RequireDigit = true;
+                options.Password.RequireNonAlphanumeric = true; // @$%
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequiredLength = 5;
+
+                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+
+                //options.User.AllowedUserNameCharacters = "asddfgh9876%$";
+                
+			})/*AddEntityFrameworkStores<ApplicationDbContext>()*/;
+
+            //services.AddAuthentication(); // Automaticlly called
+
 
 
             services.AddIdentity<IdentityUser, IdentityRole>()

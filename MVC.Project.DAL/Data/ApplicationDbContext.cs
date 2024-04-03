@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MVC.Project.DAL.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) :base(options)
