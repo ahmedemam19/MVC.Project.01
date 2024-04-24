@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Options;
@@ -18,7 +19,8 @@ using System.Threading.Tasks;
 
 namespace MVC.Project.PL.Controllers
 {
-    public class EmployeeController : Controller
+	[Authorize]
+	public class EmployeeController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
@@ -13,11 +14,11 @@ using System.Threading.Tasks;
 
 namespace MVC.Project.PL.Controllers
 {
-    // Inheritance : Departmentcontroller is a controller 
-    // Association : Departmentcontroller has a DepartmentRepository
+	// Inheritance : Departmentcontroller is a controller 
+	// Association : Departmentcontroller has a DepartmentRepository
 
-
-    public class DepartmentController : Controller
+	[Authorize]
+	public class DepartmentController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;

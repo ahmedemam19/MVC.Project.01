@@ -56,8 +56,28 @@ namespace MVC.Project.PL
             }).AddEntityFrameworkStores<ApplicationDbContext>();
 
 
-            // Called By Default
-            //services.AddAuthentication();
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/SignIn";
+                options.ExpireTimeSpan = TimeSpan.FromDays(1);
+                options.AccessDeniedPath = "/Home/Error";
+
+            });
+
+
+            // By this we add new Schema named [ Hamada ]
+            services.AddAuthentication(options =>
+            {
+                //options.DefaultAuthenticateScheme = "Identity.Application"; // Default Schema
+                //options.DefaultChallengeScheme = "Identity.Application";
+
+			})
+                .AddCookie("Hamada", options =>
+            {
+				options.LoginPath = "/Account/SignIn";
+				options.ExpireTimeSpan = TimeSpan.FromDays(1);
+				options.AccessDeniedPath = "/Home/Error";
+			});
 
         }
 
