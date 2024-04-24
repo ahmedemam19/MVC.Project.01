@@ -107,5 +107,18 @@ namespace MVC.Project.PL.Controllers
 
         #endregion
 
+
+
+        #region Sign Out
+
+
+        public async new Task<IActionResult> SignOut()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction(nameof(SignIn));
+        }
+
+
+        #endregion
     }
 }
