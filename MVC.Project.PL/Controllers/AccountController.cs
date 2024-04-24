@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Internal;
 using Microsoft.AspNetCore.Mvc;
 using MVC.Project.DAL.Models;
-using MVC.Project.PL.ViewModels.User;
+using MVC.Project.PL.ViewModels.Account;
 using System.Threading.Tasks;
 
 namespace MVC.Project.PL.Controllers
@@ -69,12 +69,41 @@ namespace MVC.Project.PL.Controllers
 
         #region Sign In
 
-
+        [HttpGet]
         public IActionResult SignIn()
         {
             return View();
         }
 
+
+        [HttpPost]
+        public async Task<IActionResult> SignIn(SignInViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if(user is not null)
+                {
+                    var flag = await _userManager.CheckPasswordAsync(user, model.Password);
+                    if(flag)
+                    {
+                        var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
+
+                        if (result.IsLockedOut)
+                            ModelState.AddModelError(string.Empty, "Your Account is Locked !!");
+
+                        if (result.Succeeded)
+                            return RedirectToAction(nameof(HomeController.Index), "Home");
+
+                        if (result.IsNotAllowed)
+                            ModelState.AddModelError(string.Empty, "Your Account is not Confirmed yet !!");
+
+					}
+                }
+                ModelState.AddModelError(string.Empty, "Invalid Login");
+            }
+            return View(model);
+        }
 
         #endregion
 

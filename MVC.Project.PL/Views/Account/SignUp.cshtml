@@ -12,7 +12,7 @@
 		<form asp-action="SignUp" >
 			<input class="text hamada" asp-for="FirstName" placeholder="First Name" required="">
 			<input class="text hamada" asp-for="LastName" placeholder="Last Name" required="">
-			<input class="text hamada" asp-for="UserName" placeholder="User name" required="">
+			<input class="text hamada" asp-for="UserName" placeholder="UserName" required="">
 			<input class="text email" asp-for="Email" placeholder="Email" required="">
 			<input class="text" asp-for="Password" placeholder="Password" required="">
 			<input class="text w3lpass" asp-for="ConfirmPassword" placeholder="Confirm Password" required="">
@@ -29,3 +29,7 @@
 	</div>
 </div>
 
+
+@section ValidateScriptsSection {
+	<partial name="_ValidationScriptsPartial" />
+}

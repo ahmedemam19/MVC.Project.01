@@ -1,27 +1,19 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
-using MVC.Project.BLL.Interfaces;
-using MVC.Project.BLL.Repositories;
 using MVC.Project.DAL.Data;
 using MVC.Project.DAL.Models;
 using MVC.Project.PL.Extensions;
 using MVC.Project.PL.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MVC.Project.PL
 {
-    public class Startup
+	public class Startup
     {
         public IConfiguration Configuration { get; }
         public Startup(IConfiguration configuration)
@@ -37,7 +29,7 @@ namespace MVC.Project.PL
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("defaultConnection"));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
 
@@ -46,10 +38,6 @@ namespace MVC.Project.PL
 
 
             services.AddAutoMapper(mapper => mapper.AddProfile(new MappingProfile()));
-
-            services.AddScoped<UserManager<ApplicationUser>>();
-            services.AddScoped<SignInManager<ApplicationUser>>();
-            services.AddScoped<RoleManager<IdentityRole>>();
 
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -65,20 +53,15 @@ namespace MVC.Project.PL
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
 
-                //options.User.AllowedUserNameCharacters = "asddfgh9876%$";
-                
-			})/*AddEntityFrameworkStores<ApplicationDbContext>()*/;
-
-            //services.AddAuthentication(); // Automaticlly called
+            }).AddEntityFrameworkStores<ApplicationDbContext>();
 
 
-
-            services.AddIdentity<IdentityUser, IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
-
+            // Called By Default
+            //services.AddAuthentication();
 
         }
+
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
