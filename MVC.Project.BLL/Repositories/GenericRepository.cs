@@ -32,19 +32,19 @@ namespace MVC.Project.BLL.Repositories
             => _dbContext.Set<T>().Remove(entity);
 
 
-        public T Get(int id)
+        public async Task<T> GetAsync(int id)
         {
             //return _dbContext.Set<T>().Find(id);
 
-            return _dbContext.Find<T>(id); // EF Core 3.1 New Feature
+            return await  _dbContext.FindAsync<T>(id); // EF Core 3.1 New Feature
         }
 
-        public IEnumerable<T> GetAll()
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
             if (typeof(T) == typeof(Employee))
-                return (IEnumerable<T>) _dbContext.Employees.Include(e => e.Department).AsNoTracking().ToList();
+                return (IEnumerable<T>) await _dbContext.Employees.Include(e => e.Department).AsNoTracking().ToListAsync();
             else
-                return  _dbContext.Set<T>().AsNoTracking().ToList();
+                return await _dbContext.Set<T>().AsNoTracking().ToListAsync();
         }
     }
 }

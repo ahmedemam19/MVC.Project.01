@@ -12,7 +12,7 @@
 
 @if(!string.IsNullOrEmpty(TempData["Message"] as string))
 {
-    <div class="alert alert-primary">
+    <div class="alert alert-primary fade-in-out">
         @TempData["Message"]
     </div>
 }
@@ -58,6 +58,7 @@
     <table class="table table-striped table-hover table-bordered">
         <thead>
             <tr>
+                <th>Image</th>
                 <th>@Html.DisplayNameFor(e => e.Name)</th>
                 <th>@Html.DisplayNameFor(e => e.Age)</th>
                 <th>@Html.DisplayNameFor(e => e.Address)</th>
@@ -80,6 +81,9 @@
             @foreach(var employee in Model)
             {
                 <tr>
+                    <td>
+                        <img src="~/files/images/@employee.ImageName" width="75" class="img-fluid rounded-circle" alt="Employee Img" />
+                    </td>
                     <td>@employee.Name</td>
                     <td>@employee.Age</td>
                     <td>@employee.Address</td>
