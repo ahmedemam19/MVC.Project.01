@@ -140,7 +140,7 @@ namespace MVC.Project.PL.Controllers
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if(user is not null)
                 {
-
+                    
                 }
                 ModelState.AddModelError(string.Empty, "There is no Account with this Email !!");
             }
