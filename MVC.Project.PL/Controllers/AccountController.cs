@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Humanizer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Internal;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using MVC.Project.DAL.Models;
+using MVC.Project.PL.Services.EmailSender;
 using MVC.Project.PL.ViewModels.Account;
 using System.Threading.Tasks;
 
@@ -9,11 +12,19 @@ namespace MVC.Project.PL.Controllers
 {
     public class AccountController : Controller
     {
+		private readonly IEmailSender _emailSender;
+		private readonly IConfiguration _configuration;
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly SignInManager<ApplicationUser> _signInManager;
 
-		public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+		public AccountController(
+            IEmailSender emailSender,
+            IConfiguration configuration,
+            UserManager<ApplicationUser> userManager, 
+            SignInManager<ApplicationUser> signInManager)
         {
+			_emailSender = emailSender;
+			_configuration = configuration;
 			_userManager = userManager;
 			_signInManager = signInManager;
 		}
@@ -107,5 +118,111 @@ namespace MVC.Project.PL.Controllers
 
         #endregion
 
-    }
+
+
+        #region Sign Out
+
+
+        public async new Task<IActionResult> SignOut()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction(nameof(SignIn));
+        }
+
+
+        #endregion
+
+
+
+        #region Forget Password
+
+        [HttpGet]
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> SendResetPasswordEmailAsync(ForgetPasswordViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if(user is not null)
+                {
+
+                    var resetPasswordToken = await _userManager.GeneratePasswordResetTokenAsync(user); // UniQue token for this user
+
+                    var resetPasswordUrl = Url.Action("ResetPassword", "Account", new { email = user.Email, token = resetPasswordToken });
+                   
+                    // https://localhost:5001/Account/ResetPassword?email=ahmed@gmail.com&token=hwbkjbekfbvkbekfjvbkejvbkjevb
+
+					await _emailSender.SendAsync(
+                        from: _configuration["EmailSettings:SenderEmail"],
+                        recipients: model.Email,
+                        subject: "Reset your Password .",
+                        body: resetPasswordUrl);
+
+                    return RedirectToAction(nameof(CheckYourInbox));
+                }
+                ModelState.AddModelError(string.Empty, "There is no Account with this Email !!");
+            }
+            return View(model);
+        }
+
+
+
+        public IActionResult CheckYourInbox()
+        {
+            return View();
+        }
+
+
+        #endregion
+
+
+
+        #region Reset Password
+
+
+        [HttpGet]
+        public IActionResult ResetPassword(string email, string token)
+        {
+            TempData["Email"] = email;
+            TempData["Token"] = token;
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var email = TempData["Email"] as string;
+                var token = TempData["Token"] as string;
+
+                var user = await _userManager.FindByEmailAsync(email);
+
+
+                if(user is not null)
+                {
+					await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+                    return RedirectToAction(nameof(SignIn));
+				}
+
+                ModelState.AddModelError(string.Empty, "Url is not Valid !!");
+				
+            }
+            return View(model);
+        }
+
+
+
+
+		#endregion
+
+
+	}
 }
