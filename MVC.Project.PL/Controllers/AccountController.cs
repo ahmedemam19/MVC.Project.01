@@ -183,7 +183,6 @@ namespace MVC.Project.PL.Controllers
 
 
 
-
         #region Reset Password
 
 
@@ -223,5 +222,7 @@ namespace MVC.Project.PL.Controllers
 
 
 		#endregion
+
+
 	}
 }
